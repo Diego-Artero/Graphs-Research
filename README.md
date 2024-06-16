@@ -1,5 +1,4 @@
 # Graphs-Research
-# Graphs Research
 
 ## Description
 
