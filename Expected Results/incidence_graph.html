@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "David ", "label": "David ", "shape": "dot"}, {"color": "#97c2fc", "id": "Diego Artero", "label": "Diego Artero", "shape": "dot"}, {"color": "#97c2fc", "id": "Felipe Lucena", "label": "Felipe Lucena", "shape": "dot"}, {"color": "#97c2fc", "id": "Gabriek Yoshihiko ", "label": "Gabriek Yoshihiko ", "shape": "dot"}, {"color": "#97c2fc", "id": "Gustavo Moura ", "label": "Gustavo Moura ", "shape": "dot"}, {"color": "#97c2fc", "id": "Guilherme Ryu Mitsuzumi", "label": "Guilherme Ryu Mitsuzumi", "shape": "dot"}, {"color": "#97c2fc", "id": "aldair messias", "label": "aldair messias", "shape": "dot"}, {"color": "#97c2fc", "id": "Marcelo Vieira de Carvalho", "label": "Marcelo Vieira de Carvalho", "shape": "dot"}, {"color": "#97c2fc", "id": "Kaike Renan ", "label": "Kaike Renan ", "shape": "dot"}, {"color": "#97c2fc", "id": "Felipe Rocha ", "label": "Felipe Rocha ", "shape": "dot"}, {"color": "#97c2fc", "id": "Gustavo gonzales", "label": "Gustavo gonzales", "shape": "dot"}, {"color": "#97c2fc", "id": "Elivam ", "label": "Elivam ", "shape": "dot"}, {"color": "#97c2fc", "id": "Gabriel Henrique de Souza Claus Rodrigues ", "label": "Gabriel Henrique de Souza Claus Rodrigues ", "shape": "dot"}, {"color": "#97c2fc", "id": "Vinicius Gatti Rodrigues ", "label": "Vinicius Gatti Rodrigues ", "shape": "dot"}, {"color": "#97c2fc", "id": "Emilly Lima ", "label": "Emilly Lima ", "shape": "dot"}, {"color": "#97c2fc", "id": "Paulo Henrique Fusco", "label": "Paulo Henrique Fusco", "shape": "dot"}, {"color": "#97c2fc", "id": "Hugo Merc\u00eas Zampronio ", "label": "Hugo Merc\u00eas Zampronio ", "shape": "dot"}, {"color": "#97c2fc", "id": "Davi Aguilar da Silva ", "label": "Davi Aguilar da Silva ", "shape": "dot"}, {"color": "#97c2fc", "id": "Bruno Bortoleto", "label": "Bruno Bortoleto", "shape": "dot"}, {"color": "#97c2fc", "id": "Guilherme Viana Morrone ", "label": "Guilherme Viana Morrone ", "shape": "dot"}, {"color": "#97c2fc", "id": "filipe willian ", "label": "filipe willian ", "shape": "dot"}, {"color": "#97c2fc", "id": "Andr\u00e9 Lu\u00eds de Souza Santos ", "label": "Andr\u00e9 Lu\u00eds de Souza Santos ", "shape": "dot"}, {"color": "#97c2fc", "id": "Hugo", "label": "Hugo", "shape": "dot"}, {"color": "#97c2fc", "id": "Gabriel Anselmo", "label": "Gabriel Anselmo", "shape": "dot"}, {"color": "#97c2fc", "id": "Fernando Caffer", "label": "Fernando Caffer", "shape": "dot"}, {"color": "#97c2fc", "id": "Giovanni Pimenta", "label": "Giovanni Pimenta", "shape": "dot"}, {"color": "#97c2fc", "id": "Gustavo Marques", "label": "Gustavo Marques", "shape": "dot"}, {"color": "#97c2fc", "id": "Gustavo Vieira ", "label": "Gustavo Vieira ", "shape": "dot"}, {"color": "#97c2fc", "id": "Felipe Estevo", "label": "Felipe Estevo", "shape": "dot"}, {"color": "#97c2fc", "id": "Allan Shinhama", "label": "Allan Shinhama", "shape": "dot"}, {"color": "#97c2fc", "id": "5 minutes craft", "label": "5 minutes craft", "shape": "dot"}, {"color": "#97c2fc", "id": "Adan TV", "label": "Adan TV", "shape": "dot"}, {"color": "#97c2fc", "id": "Alan", "label": "Alan", "shape": "dot"}, {"color": "#97c2fc", "id": "Alanzoka", "label": "Alanzoka", "shape": "dot"}, {"color": "#97c2fc", "id": "Alanzoka ", "label": "Alanzoka ", "shape": "dot"}, {"color": "#97c2fc", "id": "Aspect", "label": "Aspect", "shape": "dot"}, {"color": "#97c2fc", "id": "Bel para meninas", "label": "Bel para meninas", "shape": "dot"}, {"color": "#97c2fc", "id": "Billie Eilish", "label": "Billie Eilish", "shape": "dot"}, {"color": "#97c2fc", "id": "Bistecone", "label": "Bistecone", "shape": "dot"}, {"color": "#97c2fc", "id": "Bluez\u00e3o", "label": "Bluez\u00e3o", "shape": "dot"}, {"color": "#97c2fc", "id": "BrksEdu", "label": "BrksEdu", "shape": "dot"}, {"color": "#97c2fc", "id": "Caco", "label": "Caco", "shape": "dot"}, {"color": "#97c2fc", "id": "Caio Texeira ", "label": "Caio Texeira ", "shape": "dot"}, {"color": "#97c2fc", "id": "Caiox", "label": "Caiox", "shape": "dot"}, {"color": "#97c2fc", "id": "Calango", "label": "Calango", "shape": "dot"}, {"color": "#97c2fc", "id": "Cap", "label": "Cap", "shape": "dot"}, {"color": "#97c2fc", "id": "Carlinhos Maia", "label": "Carlinhos Maia", "shape": "dot"}, {"color": "#97c2fc", "id": "Casimiro", "label": "Casimiro", "shape": "dot"}, {"color": "#97c2fc", "id": "Casimiro ", "label": "Casimiro ", "shape": "dot"}, {"color": "#97c2fc", "id": "Cellbit", "label": "Cellbit", "shape": "dot"}, {"color": "#97c2fc", "id": "Cellbit ", "label": "Cellbit ", "shape": "dot"}, {"color": "#97c2fc", "id": "Chico Moedas", "label": "Chico Moedas", "shape": "dot"}, {"color": "#97c2fc", "id": "Chico Moedas ", "label": "Chico Moedas ", "shape": "dot"}, {"color": "#97c2fc", "id": "Coisa de Nerd", "label": "Coisa de Nerd", "shape": "dot"}, {"color": "#97c2fc", "id": "Cristiano Ronaldo", "label": "Cristiano Ronaldo", "shape": "dot"}, {"color": "#97c2fc", "id": "D\u0027vontay Friga", "label": "D\u0027vontay Friga", "shape": "dot"}, {"color": "#97c2fc", "id": "Daniel fernandes", "label": "Daniel fernandes", "shape": "dot"}, {"color": "#97c2fc", "id": "Dear Maidy", "label": "Dear Maidy", "shape": "dot"}, {"color": "#97c2fc", "id": "Diggo", "label": "Diggo", "shape": "dot"}, {"color": "#97c2fc", "id": "Diogo Defante", "label": "Diogo Defante", "shape": "dot"}, {"color": "#97c2fc", "id": "Edu primitivo ", "label": "Edu primitivo ", "shape": "dot"}, {"color": "#97c2fc", "id": "Edukof", "label": "Edukof", "shape": "dot"}, {"color": "#97c2fc", "id": "Eminem", "label": "Eminem", "shape": "dot"}, {"color": "#97c2fc", "id": "Enaldinho", "label": "Enaldinho", "shape": "dot"}, {"color": "#97c2fc", "id": "Erika Hilton", "label": "Erika Hilton", "shape": "dot"}, {"color": "#97c2fc", "id": "Eslen Delanogare ", "label": "Eslen Delanogare ", "shape": "dot"}, {"color": "#97c2fc", "id": "Fallen", "label": "Fallen", "shape": "dot"}, {"color": "#97c2fc", "id": "Fallen ", "label": "Fallen ", "shape": "dot"}, {"color": "#97c2fc", "id": "Fazendo Nerdice", "label": "Fazendo Nerdice", "shape": "dot"}, {"color": "#97c2fc", "id": "Felipe neto", "label": "Felipe neto", "shape": "dot"}, {"color": "#97c2fc", "id": "Felps", "label": "Felps", "shape": "dot"}, {"color": "#97c2fc", "id": "Fernanda Kipper", "label": "Fernanda Kipper", "shape": "dot"}, {"color": "#97c2fc", "id": "Filipe Ramos", "label": "Filipe Ramos", "shape": "dot"}, {"color": "#97c2fc", "id": "Fireship", "label": "Fireship", "shape": "dot"}, {"color": "#97c2fc", "id": "Flakes Power", "label": "Flakes Power", "shape": "dot"}, {"color": "#97c2fc", "id": "FrogTV", "label": "FrogTV", "shape": "dot"}, {"color": "#97c2fc", "id": "FunkyBlackCat ", "label": "FunkyBlackCat ", "shape": "dot"}, {"color": "#97c2fc", "id": "GEMAPLYS", "label": "GEMAPLYS", "shape": "dot"}, {"color": "#97c2fc", "id": "Gabriel Breier ", "label": "Gabriel Breier ", "shape": "dot"}, {"color": "#97c2fc", "id": "Gaules", "label": "Gaules", "shape": "dot"}, {"color": "#97c2fc", "id": "Gaules ", "label": "Gaules ", "shape": "dot"}, {"color": "#97c2fc", "id": "Gloria Groove", "label": "Gloria Groove", "shape": "dot"}, {"color": "#97c2fc", "id": "Goularte", "label": "Goularte", "shape": "dot"}, {"color": "#97c2fc", "id": "Ibere tenorio ", "label": "Ibere tenorio ", "shape": "dot"}, {"color": "#97c2fc", "id": "Igor job", "label": "Igor job", "shape": "dot"}, {"color": "#97c2fc", "id": "Jeff bala", "label": "Jeff bala", "shape": "dot"}, {"color": "#97c2fc", "id": "Joao Miao ", "label": "Joao Miao ", "shape": "dot"}, {"color": "#97c2fc", "id": "Jordan B. Peterson", "label": "Jordan B. Peterson", "shape": "dot"}, {"color": "#97c2fc", "id": "Jotape", "label": "Jotape", "shape": "dot"}, {"color": "#97c2fc", "id": "Jukes", "label": "Jukes", "shape": "dot"}, {"color": "#97c2fc", "id": "Juliane de camargo ", "label": "Juliane de camargo ", "shape": "dot"}, {"color": "#97c2fc", "id": "J\u00falio Cocielo ", "label": "J\u00falio Cocielo ", "shape": "dot"}, {"color": "#97c2fc", "id": "Kefera", "label": "Kefera", "shape": "dot"}, {"color": "#97c2fc", "id": "Kevin Hart ", "label": "Kevin Hart ", "shape": "dot"}, {"color": "#97c2fc", "id": "Kleberiano", "label": "Kleberiano", "shape": "dot"}, {"color": "#97c2fc", "id": "Lactea", "label": "Lactea", "shape": "dot"}, {"color": "#97c2fc", "id": "Lucas Inutilismo", "label": "Lucas Inutilismo", "shape": "dot"}, {"color": "#97c2fc", "id": "Lucas inutilismo", "label": "Lucas inutilismo", "shape": "dot"}, {"color": "#97c2fc", "id": "Luqueta", "label": "Luqueta", "shape": "dot"}, {"color": "#97c2fc", "id": "Malena", "label": "Malena", "shape": "dot"}, {"color": "#97c2fc", "id": "Mark Rober", "label": "Mark Rober", "shape": "dot"}, {"color": "#97c2fc", "id": "Matheus Teodoro", "label": "Matheus Teodoro", "shape": "dot"}, {"color": "#97c2fc", "id": "Menges", "label": "Menges", "shape": "dot"}, {"color": "#97c2fc", "id": "Messi", "label": "Messi", "shape": "dot"}, {"color": "#97c2fc", "id": "MrBeast", "label": "MrBeast", "shape": "dot"}, {"color": "#97c2fc", "id": "Mylon", "label": "Mylon", "shape": "dot"}, {"color": "#97c2fc", "id": "Narrativando", "label": "Narrativando", "shape": "dot"}, {"color": "#97c2fc", "id": "Neymar", "label": "Neymar", "shape": "dot"}, {"color": "#97c2fc", "id": "Nobru", "label": "Nobru", "shape": "dot"}, {"color": "#97c2fc", "id": "Orochinho", "label": "Orochinho", "shape": "dot"}, {"color": "#97c2fc", "id": "Paulinho O LOKO", "label": "Paulinho O LOKO", "shape": "dot"}, {"color": "#97c2fc", "id": "Paulinho o Loko(modder)", "label": "Paulinho o Loko(modder)", "shape": "dot"}, {"color": "#97c2fc", "id": "PetrolHead", "label": "PetrolHead", "shape": "dot"}, {"color": "#97c2fc", "id": "Pokelaws", "label": "Pokelaws", "shape": "dot"}, {"color": "#97c2fc", "id": "Renato Garcia", "label": "Renato Garcia", "shape": "dot"}, {"color": "#97c2fc", "id": "Saiko", "label": "Saiko", "shape": "dot"}, {"color": "#97c2fc", "id": "Sam Sulek", "label": "Sam Sulek", "shape": "dot"}, {"color": "#97c2fc", "id": "Sgarbi", "label": "Sgarbi", "shape": "dot"}, {"color": "#97c2fc", "id": "Shizzy", "label": "Shizzy", "shape": "dot"}, {"color": "#97c2fc", "id": "Smurfdomuca", "label": "Smurfdomuca", "shape": "dot"}, {"color": "#97c2fc", "id": "Snopey", "label": "Snopey", "shape": "dot"}, {"color": "#97c2fc", "id": "Souzones", "label": "Souzones", "shape": "dot"}, {"color": "#97c2fc", "id": "Super Xand\u00e3o ", "label": "Super Xand\u00e3o ", "shape": "dot"}, {"color": "#97c2fc", "id": "Tata", "label": "Tata", "shape": "dot"}, {"color": "#97c2fc", "id": "Tazercraft", "label": "Tazercraft", "shape": "dot"}, {"color": "#97c2fc", "id": "Viniccius13", "label": "Viniccius13", "shape": "dot"}, {"color": "#97c2fc", "id": "Wesley alem\u00e3o ", "label": "Wesley alem\u00e3o ", "shape": "dot"}, {"color": "#97c2fc", "id": "Yoda", "label": "Yoda", "shape": "dot"}, {"color": "#97c2fc", "id": "Zigueira", "label": "Zigueira", "shape": "dot"}, {"color": "#97c2fc", "id": "_hanjustin", "label": "_hanjustin", "shape": "dot"}, {"color": "#97c2fc", "id": "adam tv", "label": "adam tv", "shape": "dot"}, {"color": "#97c2fc", "id": "bruno hatake", "label": "bruno hatake", "shape": "dot"}, {"color": "#97c2fc", "id": "camisa_23", "label": "camisa_23", "shape": "dot"}, {"color": "#97c2fc", "id": "cr7", "label": "cr7", "shape": "dot"}, {"color": "#97c2fc", "id": "desimpedidos ", "label": "desimpedidos ", "shape": "dot"}, {"color": "#97c2fc", "id": "donaconcinhaofc", "label": "donaconcinhaofc", "shape": "dot"}, {"color": "#97c2fc", "id": "duda rubert", "label": "duda rubert", "shape": "dot"}, {"color": "#97c2fc", "id": "fitwsean", "label": "fitwsean", "shape": "dot"}, {"color": "#97c2fc", "id": "kai cenat", "label": "kai cenat", "shape": "dot"}, {"color": "#97c2fc", "id": "kyrie irving", "label": "kyrie irving", "shape": "dot"}, {"color": "#97c2fc", "id": "lactea ", "label": "lactea ", "shape": "dot"}, {"color": "#97c2fc", "id": "lara negrini", "label": "lara negrini", "shape": "dot"}, {"color": "#97c2fc", "id": "leo otaku", "label": "leo otaku", "shape": "dot"}, {"color": "#97c2fc", "id": "lilbignanc.fit", "label": "lilbignanc.fit", "shape": "dot"}, {"color": "#97c2fc", "id": "nanny santos ", "label": "nanny santos ", "shape": "dot"}, {"color": "#97c2fc", "id": "pathradecha", "label": "pathradecha", "shape": "dot"}, {"color": "#97c2fc", "id": "pedro loos", "label": "pedro loos", "shape": "dot"}, {"color": "#97c2fc", "id": "progamador iniciante", "label": "progamador iniciante", "shape": "dot"}, {"color": "#97c2fc", "id": "raluca", "label": "raluca", "shape": "dot"}, {"color": "#97c2fc", "id": "raluca ", "label": "raluca ", "shape": "dot"}, {"color": "#97c2fc", "id": "taylor swift", "label": "taylor swift", "shape": "dot"}, {"color": "#97c2fc", "id": "xQc", "label": "xQc", "shape": "dot"}, {"color": "#97c2fc", "id": "\u00c9 o tata", "label": "\u00c9 o tata", "shape": "dot"}, {"color": "#97c2fc", "id": "\u00c9oYoshi", "label": "\u00c9oYoshi", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"from": "David ", "to": "Eminem", "width": 1}, {"from": "David ", "to": "Fernanda Kipper", "width": 1}, {"from": "David ", "to": "Ibere tenorio ", "width": 1}, {"from": "David ", "to": "Joao Miao ", "width": 1}, {"from": "David ", "to": "Viniccius13", "width": 1}, {"from": "Diego Artero", "to": "Eslen Delanogare ", "width": 1}, {"from": "Diego Artero", "to": "Fireship", "width": 1}, {"from": "Diego Artero", "to": "Jordan B. Peterson", "width": 1}, {"from": "Diego Artero", "to": "Sam Sulek", "width": 1}, {"from": "Diego Artero", "to": "Shizzy", "width": 1}, {"from": "Felipe Lucena", "to": "Cristiano Ronaldo", "width": 1}, {"from": "Felipe Lucena", "to": "Luqueta", "width": 1}, {"from": "Felipe Lucena", "to": "Messi", "width": 1}, {"from": "Felipe Lucena", "to": "Paulinho o Loko(modder)", "width": 1}, {"from": "Felipe Lucena", "to": "Super Xand\u00e3o ", "width": 1}, {"from": "Gabriek Yoshihiko ", "to": "Aspect", "width": 1}, {"from": "Gabriek Yoshihiko ", "to": "Igor job", "width": 1}, {"from": "Gabriek Yoshihiko ", "to": "Jeff bala", "width": 1}, {"from": "Gabriek Yoshihiko ", "to": "Lactea", "width": 1}, {"from": "Gabriek Yoshihiko ", "to": "Wesley alem\u00e3o ", "width": 1}, {"from": "Gustavo Moura ", "to": "Alanzoka", "width": 1}, {"from": "Gustavo Moura ", "to": "Cellbit", "width": 1}, {"from": "Gustavo Moura ", "to": "FrogTV", "width": 1}, {"from": "Gustavo Moura ", "to": "Lucas Inutilismo", "width": 1}, {"from": "Gustavo Moura ", "to": "Mylon", "width": 1}, {"from": "Guilherme Ryu Mitsuzumi", "to": "_hanjustin", "width": 1}, {"from": "Guilherme Ryu Mitsuzumi", "to": "camisa_23", "width": 1}, {"from": "Guilherme Ryu Mitsuzumi", "to": "fitwsean", "width": 1}, {"from": "Guilherme Ryu Mitsuzumi", "to": "lilbignanc.fit", "width": 1}, {"from": "Guilherme Ryu Mitsuzumi", "to": "pathradecha", "width": 1}, {"from": "aldair messias", "to": "adam tv", "width": 1}, {"from": "aldair messias", "to": "bruno hatake", "width": 1}, {"from": "aldair messias", "to": "leo otaku", "width": 1}, {"from": "aldair messias", "to": "progamador iniciante", "width": 1}, {"from": "aldair messias", "to": "raluca", "width": 1}, {"from": "Marcelo Vieira de Carvalho", "to": "Diggo", "width": 1}, {"from": "Marcelo Vieira de Carvalho", "to": "Fazendo Nerdice", "width": 1}, {"from": "Marcelo Vieira de Carvalho", "to": "Lucas inutilismo", "width": 1}, {"from": "Marcelo Vieira de Carvalho", "to": "Menges", "width": 1}, {"from": "Marcelo Vieira de Carvalho", "to": "Narrativando", "width": 1}, {"from": "Kaike Renan ", "to": "Casimiro ", "width": 1}, {"from": "Kaike Renan ", "to": "Chico Moedas ", "width": 1}, {"from": "Kaike Renan ", "to": "Jukes", "width": 1}, {"from": "Kaike Renan ", "to": "Smurfdomuca", "width": 1}, {"from": "Kaike Renan ", "to": "Yoda", "width": 1}, {"from": "Felipe Rocha ", "to": "Adan TV", "width": 1}, {"from": "Felipe Rocha ", "to": "Bel para meninas", "width": 1}, {"from": "Felipe Rocha ", "to": "Bluez\u00e3o", "width": 1}, {"from": "Felipe Rocha ", "to": "Flakes Power", "width": 1}, {"from": "Felipe Rocha ", "to": "Nobru", "width": 1}, {"from": "Gustavo gonzales", "to": "5 minutes craft", "width": 1}, {"from": "Gustavo gonzales", "to": "Kefera", "width": 1}, {"from": "Gustavo gonzales", "to": "cr7", "width": 1}, {"from": "Gustavo gonzales", "to": "raluca ", "width": 1}, {"from": "Gustavo gonzales", "to": "taylor swift", "width": 1}, {"from": "Elivam ", "to": "Alanzoka", "width": 1}, {"from": "Elivam ", "to": "Casimiro", "width": 1}, {"from": "Elivam ", "to": "Fallen", "width": 1}, {"from": "Elivam ", "to": "Gaules", "width": 1}, {"from": "Elivam ", "to": "PetrolHead", "width": 1}, {"from": "Gabriel Henrique de Souza Claus Rodrigues ", "to": "Alanzoka", "width": 1}, {"from": "Gabriel Henrique de Souza Claus Rodrigues ", "to": "Cellbit", "width": 1}, {"from": "Gabriel Henrique de Souza Claus Rodrigues ", "to": "Souzones", "width": 1}, {"from": "Gabriel Henrique de Souza Claus Rodrigues ", "to": "\u00c9oYoshi", "width": 1}, {"from": "Vinicius Gatti Rodrigues ", "to": "Alan", "width": 1}, {"from": "Vinicius Gatti Rodrigues ", "to": "Felps", "width": 1}, {"from": "Vinicius Gatti Rodrigues ", "to": "Viniccius13", "width": 1}, {"from": "Emilly Lima ", "to": "Caco", "width": 1}, {"from": "Emilly Lima ", "to": "Dear Maidy", "width": 1}, {"from": "Emilly Lima ", "to": "Edu primitivo ", "width": 1}, {"from": "Emilly Lima ", "to": "Felipe neto", "width": 1}, {"from": "Emilly Lima ", "to": "Juliane de camargo ", "width": 1}, {"from": "Paulo Henrique Fusco", "to": "Casimiro", "width": 1}, {"from": "Paulo Henrique Fusco", "to": "Chico Moedas", "width": 1}, {"from": "Paulo Henrique Fusco", "to": "Lactea", "width": 1}, {"from": "Paulo Henrique Fusco", "to": "Matheus Teodoro", "width": 1}, {"from": "Paulo Henrique Fusco", "to": "Sgarbi", "width": 1}, {"from": "Hugo Merc\u00eas Zampronio ", "to": "Alanzoka", "width": 1}, {"from": "Hugo Merc\u00eas Zampronio ", "to": "Cellbit ", "width": 1}, {"from": "Hugo Merc\u00eas Zampronio ", "to": "Jotape", "width": 1}, {"from": "Hugo Merc\u00eas Zampronio ", "to": "Mylon", "width": 1}, {"from": "Hugo Merc\u00eas Zampronio ", "to": "Yoda", "width": 1}, {"from": "Davi Aguilar da Silva ", "to": "Alanzoka ", "width": 1}, {"from": "Davi Aguilar da Silva ", "to": "Cellbit", "width": 1}, {"from": "Davi Aguilar da Silva ", "to": "Diogo Defante", "width": 1}, {"from": "Davi Aguilar da Silva ", "to": "Orochinho", "width": 1}, {"from": "Davi Aguilar da Silva ", "to": "Tata", "width": 1}, {"from": "Bruno Bortoleto", "to": "Casimiro", "width": 1}, {"from": "Bruno Bortoleto", "to": "Chico Moedas", "width": 1}, {"from": "Bruno Bortoleto", "to": "duda rubert", "width": 1}, {"from": "Bruno Bortoleto", "to": "lara negrini", "width": 1}, {"from": "Bruno Bortoleto", "to": "\u00c9 o tata", "width": 1}, {"from": "Guilherme Viana Morrone ", "to": "BrksEdu", "width": 1}, {"from": "Guilherme Viana Morrone ", "to": "Coisa de Nerd", "width": 1}, {"from": "Guilherme Viana Morrone ", "to": "Fallen ", "width": 1}, {"from": "Guilherme Viana Morrone ", "to": "FunkyBlackCat ", "width": 1}, {"from": "Guilherme Viana Morrone ", "to": "Gaules ", "width": 1}, {"from": "filipe willian ", "to": "Billie Eilish", "width": 1}, {"from": "filipe willian ", "to": "Carlinhos Maia", "width": 1}, {"from": "filipe willian ", "to": "Erika Hilton", "width": 1}, {"from": "filipe willian ", "to": "Gloria Groove", "width": 1}, {"from": "filipe willian ", "to": "donaconcinhaofc", "width": 1}, {"from": "Andr\u00e9 Lu\u00eds de Souza Santos ", "to": "Alanzoka", "width": 1}, {"from": "Andr\u00e9 Lu\u00eds de Souza Santos ", "to": "Calango", "width": 1}, {"from": "Andr\u00e9 Lu\u00eds de Souza Santos ", "to": "Cap", "width": 1}, {"from": "Andr\u00e9 Lu\u00eds de Souza Santos ", "to": "J\u00falio Cocielo ", "width": 1}, {"from": "Andr\u00e9 Lu\u00eds de Souza Santos ", "to": "Zigueira", "width": 1}, {"from": "Hugo", "to": "Edukof", "width": 1}, {"from": "Hugo", "to": "Enaldinho", "width": 1}, {"from": "Hugo", "to": "Goularte", "width": 1}, {"from": "Hugo", "to": "Malena", "width": 1}, {"from": "Hugo", "to": "Tazercraft", "width": 1}, {"from": "Gabriel Anselmo", "to": "Casimiro", "width": 1}, {"from": "Gabriel Anselmo", "to": "Cristiano Ronaldo", "width": 1}, {"from": "Gabriel Anselmo", "to": "Fallen", "width": 1}, {"from": "Gabriel Anselmo", "to": "Neymar", "width": 1}, {"from": "Gabriel Anselmo", "to": "Viniccius13", "width": 1}, {"from": "Fernando Caffer", "to": "Casimiro", "width": 1}, {"from": "Fernando Caffer", "to": "desimpedidos ", "width": 1}, {"from": "Fernando Caffer", "to": "lactea ", "width": 1}, {"from": "Fernando Caffer", "to": "nanny santos ", "width": 1}, {"from": "Fernando Caffer", "to": "pedro loos", "width": 1}, {"from": "Giovanni Pimenta", "to": "Alanzoka", "width": 1}, {"from": "Giovanni Pimenta", "to": "Bistecone", "width": 1}, {"from": "Giovanni Pimenta", "to": "Caiox", "width": 1}, {"from": "Giovanni Pimenta", "to": "Kleberiano", "width": 1}, {"from": "Giovanni Pimenta", "to": "Orochinho", "width": 1}, {"from": "Gustavo Marques", "to": "Gabriel Breier ", "width": 1}, {"from": "Gustavo Marques", "to": "Gaules", "width": 1}, {"from": "Gustavo Marques", "to": "Paulinho O LOKO", "width": 1}, {"from": "Gustavo Marques", "to": "Renato Garcia", "width": 1}, {"from": "Gustavo Marques", "to": "Snopey", "width": 1}, {"from": "Gustavo Vieira ", "to": "Caio Texeira ", "width": 1}, {"from": "Gustavo Vieira ", "to": "D\u0027vontay Friga", "width": 1}, {"from": "Gustavo Vieira ", "to": "Kevin Hart ", "width": 1}, {"from": "Gustavo Vieira ", "to": "kai cenat", "width": 1}, {"from": "Gustavo Vieira ", "to": "kyrie irving", "width": 1}, {"from": "Felipe Estevo", "to": "Daniel fernandes", "width": 1}, {"from": "Felipe Estevo", "to": "Filipe Ramos", "width": 1}, {"from": "Felipe Estevo", "to": "GEMAPLYS", "width": 1}, {"from": "Felipe Estevo", "to": "Orochinho", "width": 1}, {"from": "Felipe Estevo", "to": "Saiko", "width": 1}, {"from": "Allan Shinhama", "to": "Mark Rober", "width": 1}, {"from": "Allan Shinhama", "to": "MrBeast", "width": 1}, {"from": "Allan Shinhama", "to": "Pokelaws", "width": 1}, {"from": "Allan Shinhama", "to": "xQc", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
