@@ -53,3 +53,6 @@ To run the notebook, the following are required:
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/graphs-research.git
+2. Make sure "AnswersDocument.txt" is at the same folder that "Graphs.ipynb":
+   (they were only separeted only to favor the vizualization at GitHub)
+3. Execute "Graphs.ipynb".
